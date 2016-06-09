@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,8 +22,9 @@ namespace _01.CommandInterpreter
                     var startIndex = int.Parse(currentCommandParts[2]);
                     var count = int.Parse(currentCommandParts[4]);
 
-                    if (startIndex < 0 || startIndex >= initialCollection.Length ||
-                        count < 0 || count >= initialCollection.Length)
+                    if (startIndex < 0 || startIndex > initialCollection.Length - 1 ||
+                        count < 0 || count > initialCollection.Length ||
+                        count > initialCollection.Length - startIndex)
                     {
                         Console.WriteLine("Invalid input parameters.");
                     }
@@ -36,8 +38,9 @@ namespace _01.CommandInterpreter
                     var startIndex = int.Parse(currentCommandParts[2]);
                     var count = int.Parse(currentCommandParts[4]);
 
-                    if (startIndex < 0 || startIndex >= initialCollection.Length ||
-                        count < 0 || count >= initialCollection.Length)
+                    if (startIndex < 0 || startIndex > initialCollection.Length - 1 ||
+                        count < 0 || count > initialCollection.Length ||
+                        count > initialCollection.Length - startIndex)
                     {
                         Console.WriteLine("Invalid input parameters.");
                     }
@@ -49,47 +52,44 @@ namespace _01.CommandInterpreter
                 else if (currentCommandParts[0] == "rollLeft")
                 {
                     var count = int.Parse(currentCommandParts[1]);
-                    if (count < 0 || count >= initialCollection.Length)
+                    if (count < 0)
                     {
                         Console.WriteLine("Invalid input parameters.");
                     }
                     else
                     {
-                        for (var iteration = 0; iteration < count; ++iteration)
+                        var reversesCount = count % initialCollection.Length;
+                        for (var iteration = 0; iteration < reversesCount; ++iteration)
                         {
-                            var newCollection = new List<long>();
+                            Swap(ref initialCollection[0],
+                                ref initialCollection[initialCollection.Length - 1]);
 
-                            for (var i = 1; i < initialCollection.Length; ++i)
+                            for (var i = 0; i < initialCollection.Length - 2; ++i)
                             {
-                                newCollection.Add(initialCollection[i]);
+                                Swap(ref initialCollection[i], ref initialCollection[i + 1]);
                             }
-                            newCollection.Add(initialCollection[0]);
-
-                            initialCollection = newCollection.ToArray();
                         }
                     }
-
                 }
                 else if (currentCommandParts[0] == "rollRight")
                 {
                     var count = int.Parse(currentCommandParts[1]);
-                    if (count < 0 || count >= initialCollection.Length)
+                    if (count < 0)
                     {
                         Console.WriteLine("Invalid input parameters.");
                     }
                     else
                     {
-                        for (var iteration = 0; iteration < count; ++iteration)
+                        var reversesCount = count % initialCollection.Length;
+                        for (var iteration = 0; iteration < reversesCount; ++iteration)
                         {
-                            var newCollection = new List<long>();
+                            Swap(ref initialCollection[0],
+                                ref initialCollection[initialCollection.Length - 1]);
 
-                            newCollection.Add(initialCollection[initialCollection.Length - 1]);
-                            for (var i = 0; i < initialCollection.Length - 1; ++i)
+                            for (var i = initialCollection.Length - 1; i > 1; --i)
                             {
-                                newCollection.Add(initialCollection[i]);
+                                Swap(ref initialCollection[i - 1], ref initialCollection[i]);
                             }
-
-                            initialCollection = newCollection.ToArray();
                         }
                     }
                 }
@@ -98,22 +98,26 @@ namespace _01.CommandInterpreter
             }
 
             PrintCollection(initialCollection);
-
         }
-
-        private static long[] CreateInitialCollection()
+        
+        private static string[] CreateInitialCollection()
         {
             return Console.ReadLine()
-                .Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries)
-                .Select(long.Parse)
-                .ToArray();
+                .Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries);
         }
 
-        private static void PrintCollection(IEnumerable<long> collection)
+        private static void PrintCollection(IEnumerable<string> collection)
         {
             Console.Write("[");
             Console.Write(string.Join(", ", collection));
             Console.WriteLine("]");
+        }
+
+        private static void Swap<T>(ref T first, ref T second)
+        {
+            var temp = first;
+            first = second;
+            second = temp;
         }
     }
 }
