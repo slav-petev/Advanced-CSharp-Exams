@@ -26,7 +26,7 @@ namespace _02.TargetPractice
             {
                 ShiftCells(staircaseMatrix);
             }
-            
+
             PrintStaircase(staircaseMatrix);
         }
 
@@ -76,7 +76,7 @@ namespace _02.TargetPractice
             }
         }
 
-        private static void ClearImpactedCells(char[,] staircase, 
+        private static void ClearImpactedCells(char[,] staircase,
             int impactedRow, int impactedColumn, int impactRadius)
         {
             var rows = staircase.GetLength(0);
@@ -94,10 +94,10 @@ namespace _02.TargetPractice
             }
         }
 
-        private static bool IsCellImpacted(int row, int column, 
+        private static bool IsCellImpacted(int row, int column,
             int impactedRow, int imapctedColumn, int impactRadius)
         {
-            var result = Math.Pow(impactedRow - row, 2) + 
+            var result = Math.Pow(impactedRow - row, 2) +
                 Math.Pow(imapctedColumn - column, 2);
 
             return result <= impactRadius * impactRadius;
